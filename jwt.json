@@ -1,0 +1,8 @@
+{
+  "jwt_client_id": "change-me",
+  "jwt_client_secret": "change-me",
+  "technical_account_id": "change-me",
+  "org_id": "change-me",
+  "meta_scopes": ["change-me"],
+  "private_key": ["change-me"]
+}

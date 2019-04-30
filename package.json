@@ -1,0 +1,40 @@
+{
+  "name": "lib-auth-ims",
+  "version": "0.1.0",
+  "description": "IMS Auth library",
+  "main": "IMSAuth.js",
+  "scripts": {
+    "deploy": "serverless deploy -v --force;",
+    "//": [
+      "TODO Need to change deploy-jwt value to serverless deploy --config serverless-jwt.yml after",
+      "the PR https://github.com/serverless/serverless/pull/5589 gets merged"
+    ],
+    "deploy-jwt": "mv serverless.yml serverless-orig.yml; mv serverless-jwt.yml serverless.yml; serverless deploy -v --force; mv serverless.yml serverless-jwt.yml; mv serverless-orig.yml serverless.yml",
+    "wskdeploy": "wskdeploy",
+    "wskdeploy-jwt": "wskdeploy -m manifest-jwt.yml",
+    "test": "mocha",
+    "configure": "node scripts/configure"
+  },
+  "dependencies": {
+    "js-yaml": "^3.13.1",
+    "serverless-dotenv-plugin": "^2.0.1",
+    "serverless-openwhisk": "^0.18.2"
+  },
+  "devDependencies": {
+    "cookie": "^0.3.1",
+    "openwhisk": "^3.19.0",
+    "babel-eslint": "^10.0.1",
+    "dotenv": "^7.0.0",
+    "eslint": "^5.14.1",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "js-yaml": "^3.12.2",
+    "mocha": "^6.0.2",
+    "nyc": "^13.3.0",
+    "sinon": "^7.3.1",
+    "standard": "^12.0.1"
+  }
+}

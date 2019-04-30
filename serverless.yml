@@ -1,0 +1,63 @@
+service: oauth-workflow
+
+custom:
+  namespace: ${env:OW_NAMESPACE}
+  shared_namespace: ${env:OW_SHARED_NAMESPACE, 'adobeio'}
+  shared_oauth_package: oauth
+  shared_cache_package: cache
+  client_id: ${env:OAUTH_API_KEY, 'change-me'}
+  client_secret: ${env:CLIENT_SECRET, 'change-me'}
+  scopes: ${env:SCOPES, 'openid,AdobeID'}
+  persistence: ${env:IMS_AUTH_PERSIST, 'false'}
+  accessKeyId: ${env:AWS_ACCESS_KEY_ID, 'XXX'}
+  secretAccessKey: ${env:AWS_SECRET_ACCESS_KEY, 'XXX'}
+  base_url: https://runtime.adobe.io
+  redirect_url: ${env:REDIRECT_URL, 'http://www.adobe.com'}
+  # Cookie path after $(BASE_URL)/api/v1/web/
+  cookie_path: ${env:COOKIE_PATH, self:custom.namespace}
+  # package binding to the shared package
+  adobe_oauth_package: ${env:LOCAL_AUTH_PACKAGE_BINDING, 'myauthp-shared'}
+  adobe_cache_package: ${env:LOCAL_CACHE_PACKAGE_BINDING, 'mycachep-shared'}
+  # package for the auth sequence
+  adobe_auth_seq_package: ${env:LOCAL_AUTH_PACKAGE, 'myauthp'}
+  auth_seq_name: ${self:custom.adobe_auth_seq_package}/authenticate
+
+provider:
+  name: openwhisk
+
+plugins:
+  - serverless-dotenv-plugin
+  - serverless-openwhisk
+
+functions:
+  # adobe/authenticate sequence
+  authenticate:
+    name: ${self:custom.auth_seq_name}
+    sequence:
+      - /${self:custom.namespace}/${self:custom.adobe_oauth_package}/login
+      - /${self:custom.shared_namespace}/${self:custom.shared_cache_package}/encrypt
+      - /${self:custom.namespace}/${self:custom.adobe_oauth_package}/success
+    annotations:
+      web-export: true
+
+
+resources:
+  packages:
+    adobe-oauth:
+      name: ${self:custom.adobe_oauth_package}
+      binding: /${self:custom.shared_namespace}/${self:custom.shared_oauth_package}
+      parameters:
+        auth_provider: "adobe-oauth2"
+        auth_provider_name: "adobe"
+        client_id: ${self:custom.client_id}
+        client_secret: ${self:custom.client_secret}
+        scopes: ${self:custom.scopes}
+        persistence: ${self:custom.persistence}
+        callback_url: ${self:custom.base_url}/api/v1/web/${self:custom.namespace}/${self:custom.auth_seq_name}
+        redirect_url: ${self:custom.redirect_url}
+        cookie_path: ${self:custom.cookie_path}
+        cache_namespace: ${self:custom.namespace}
+        cache_package: ${self:custom.adobe_cache_package}
+
+    adobe:
+      name: ${self:custom.adobe_auth_seq_package}

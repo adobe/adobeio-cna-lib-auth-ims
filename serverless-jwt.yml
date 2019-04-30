@@ -1,0 +1,60 @@
+service: jwtauth-workflow
+
+custom:
+  package: ${env:OW_PACKAGE, 'change-me'}
+  namespace: ${env:OW_NAMESPACE}
+  shared_namespace: ${env:OW_SHARED_NAMESPACE, 'adobeio'}
+  shared_oauth_package: oauth
+  shared_cache_package: cache
+  jwt_client_id: ${file(./jwt.json):jwt_client_id}
+  jwt_client_secret: ${file(./jwt.json):jwt_client_secret}
+  technical_account_id: ${file(./jwt.json):technical_account_id}
+  org_id: ${file(./jwt.json):org_id}
+  meta_scopes: ${file(./jwt.json):meta_scopes}
+  private_key: ${file(./jwt.json):private_key}
+  persistence: ${env:IMS_AUTH_PERSIST, 'false'}
+  accessKeyId: ${env:AWS_ACCESS_KEY_ID, 'XXX'}
+  secretAccessKey: ${env:AWS_SECRET_ACCESS_KEY, 'XXX'}
+  base_url: https://runtime.adobe.io
+  redirect_url: ${env:REDIRECT_URL, 'http://www.adobe.com'}
+  adobe_auth_package: ${env:LOCAL_AUTH_PACKAGE_BINDING, 'jwtauthp-shared'}
+  adobe_cache_package: ${env:LOCAL_CACHE_PACKAGE_BINDING, 'jwtcachep-shared'}
+  adobe_auth_seq_package: ${env:LOCAL_AUTH_PACKAGE, 'jwtauthp'}
+  jwtauth_seq_name: ${self:custom.adobe_auth_seq_package}/jwtauthenticate
+
+
+provider:
+  name: openwhisk
+
+plugins:
+  - serverless-dotenv-plugin
+  - serverless-openwhisk
+
+functions:
+  # adobe/jwtauthenticate sequence
+  jwtauthenticate:
+    name: ${self:custom.jwtauth_seq_name}
+    sequence:
+      - /${self:custom.namespace}/${self:custom.adobe_auth_package}/jwtauth
+    annotations:
+      web-export: true
+
+resources:
+  packages:
+    adobe-oauth:
+      name: ${self:custom.adobe_auth_package}
+      binding: /${self:custom.shared_namespace}/${self:custom.shared_oauth_package}
+      parameters:
+        jwt_client_id: ${self:custom.jwt_client_id}
+        jwt_client_secret: ${self:custom.jwt_client_secret}
+        technical_account_id: ${self:custom.technical_account_id}
+        org_id: ${self:custom.org_id}
+        meta_scopes: ${self:custom.meta_scopes}
+        private_key: ${self:custom.private_key}
+        persistence: ${self:custom.persistence}
+        redirect_url: ${self:custom.redirect_url}
+        cache_namespace: ${self:custom.namespace}
+        cache_package: ${self:custom.adobe_cache_package}
+
+    adobe:
+      name: ${self:custom.adobe_auth_seq_package}
