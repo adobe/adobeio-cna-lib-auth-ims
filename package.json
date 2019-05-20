@@ -12,7 +12,8 @@
     "deploy-jwt": "mv serverless.yml serverless-orig.yml; mv serverless-jwt.yml serverless.yml; serverless deploy -v --force; mv serverless.yml serverless-jwt.yml; mv serverless-orig.yml serverless.yml",
     "wskdeploy": "wskdeploy",
     "wskdeploy-jwt": "wskdeploy -m manifest-jwt.yml",
-    "test": "mocha",
+    "test": "npm run unit-tests",
+    "unit-tests": "jest --ci",
     "configure": "node scripts/configure"
   },
   "dependencies": {
@@ -28,13 +29,31 @@
     "eslint": "^5.14.1",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-jest": "^22.1.2",
     "eslint-plugin-node": "^8.0.1",
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
+    "jest": "^23.0.1",
+    "jest-junit": "^5.0.0",
     "js-yaml": "^3.12.2",
     "mocha": "^6.0.2",
     "nyc": "^13.3.0",
     "sinon": "^7.3.1",
     "standard": "^12.0.1"
+  },
+  "jest": {
+    "collectCoverage": true,
+    "testPathIgnorePatterns": [
+      "<rootDir>/tests/fixtures/"
+    ],
+    "coveragePathIgnorePatterns": [
+      "<rootDir>/tests/fixtures/"
+    ],
+    "reporters": [
+      "default",
+      "jest-junit"
+    ],
+    "testEnvironment": "node",
+    "setupTestFrameworkScriptFile": "./jest.setup.js"
   }
 }
