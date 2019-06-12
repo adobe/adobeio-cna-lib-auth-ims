@@ -60,7 +60,7 @@ function configureAuth(){
       }else
         console.log("Either no change required in serverless.yml or it is malformed")
     }else{
-      if(serverlessAuthConfig["functions"][sequenceName]["sequence"].length>persistActionIndex){
+      if(serverlessAuthConfig["functions"][sequenceName]["sequence"].length>sequenceLength){
         console.log(serverlessAuthConfig["functions"][sequenceName]["sequence"])
         serverlessAuthConfig["functions"][sequenceName]["sequence"].splice(persistActionIndex,1)
         console.log(serverlessAuthConfig["functions"][sequenceName]["sequence"])
