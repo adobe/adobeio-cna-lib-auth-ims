@@ -5,7 +5,7 @@
   "main": "IMSAuth.js",
   "scripts": {
     "deploy": "serverless deploy -v --force;",
-    "deploy-jwt": "serverless deploy -v --force -c serverless-jwt.yml",
+    "deploy-jwt": "serverless deploy --config serverless-jwt.yml -v --force",
     "wskdeploy": "wskdeploy",
     "wskdeploy-jwt": "wskdeploy -m manifest-jwt.yml",
     "test": "npm run unit-tests",
