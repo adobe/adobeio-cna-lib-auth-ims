@@ -19,6 +19,8 @@ Create an .env file in root dir with following parameters.
 
 ### For grant type of auth_code
 ```
+OW_APIHOST=adobeioruntime.net
+OW_AUTH="<change-me>"
 OW_NAMESPACE="<change-me>"
 OAUTH_API_KEY=<API_KEY of OAUTH integration in IO console>
 CLIENT_SECRET=<client_secret of above integration>
