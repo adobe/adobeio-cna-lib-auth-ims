@@ -3,7 +3,9 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 
-# lib-auth-ims
+# DEPRECATED
+
+Please use https://github.com/adobe/aio-app-scripts
 
 This module is to help CNA developers allow
 - app users to login using IMS (This is done by creating server-side authentication flow using grant type of auth_code)
